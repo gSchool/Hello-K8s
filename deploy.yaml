@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-k8s
+  template:
+    metadata:
+      labels:
+        app: hello-k8s
+    spec:
+      containers:
+        - image: rlwingjr/hello-k8s
+          name: hello-k8s
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SECRET_MESSAGE
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: secret-message
