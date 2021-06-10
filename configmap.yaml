@@ -5,4 +5,3 @@ metadata:
 data:
   application.properties: |-
     app.message=Hello from configmap
-    management.endpoints.web.exposure.exclude=*

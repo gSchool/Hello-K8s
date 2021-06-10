@@ -24,3 +24,8 @@ spec:
                 secretKeyRef:
                   name: mysecret
                   key: secret-message
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-key-secret
+                  key: JWT_SECRET_KEY
