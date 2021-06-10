@@ -20,7 +20,7 @@ Check the diff on this branch / commit to see what I did actually, but here is t
 
 ### Endpoints & Security Requirements...
 
-Use `kubectl get service/hello-k8s` to find the endpoint
+Use `kubectl get service/hello-k8s-secure` to find the endpoint
 - `GET /open` No privs required (set in config class).  This endpoint will validate the JWT (if there is one), and reveal the assigned roles if the JWT is valid.
 - `GET /hello` ROLE_USER required.
 - `GET /secret` ROLE_ADMIN required

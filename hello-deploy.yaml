@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-k8s
+  name: hello-k8s-secure
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-k8s
+      app: hello-k8s-secure
   template:
     metadata:
       labels:
-        app: hello-k8s
+        app: hello-k8s-secure
     spec:
       containers:
-        - image: rlwingjr/hello-k8s
-          name: hello-k8s
+        - image: rlwingjr/hello-k8s:security
+          name: hello-k8s-secure
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

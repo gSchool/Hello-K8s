@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-k8s
+  name: hello-k8s-secure
 spec:
   type: LoadBalancer
   selector:
-    app: hello-k8s
+    app: hello-k8s-secure
   ports:
     - protocol: TCP
       port: 8080
