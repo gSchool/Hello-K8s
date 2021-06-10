@@ -5,7 +5,7 @@ Demo application for Spring Boot with Spring Cloud Kubernetes
 This app is intended to go along with Unit [02-configmaps-secrets](https://github.com/gSchool/ent-kubernetes/tree/master/02-configmaps-secrets) of the [ent-kubernetes](https://github.com/gSchool/ent-kubernetes) learn block.
 
 ## addSecurity branch
-This branch is intended to demonstrate how you would add security to a service after it is built.  You can use it in connection with [gLab-Identity-Provider](https://github.com/gSchool/gLab-Identity-Provider) project or any other JWT based Identity Provide.
+This branch is intended to demonstrate how you would add security to a service after it is built.  You can use it in connection with [glab-idp-service](https://gitlab.com/galv-vmw-apr-2021/capstone/glab-idp-service) project or any other JWT based Identity Provide.
 
 Check the diff on this branch / commit to see what I did actually, but here is the cookbook...
 
