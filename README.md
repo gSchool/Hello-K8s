@@ -76,3 +76,51 @@ annotation to read the test properties for the test.
 ### Creating a test
 With these elements, you can now build a test with an Authorization header.  You would add this header
 as part of your get(), post(), etc argument to mockMvc.perform as I have done below...
+
+```java
+    @Test
+    void sayHello() throws Exception {
+        String token = getToken("user", Arrays.asList("ROLE_USER"));
+        when(myConfig.getMessage()).thenReturn("Sample Message");
+        mockMvc.perform(MockMvcRequestBuilders.get("/hello").header("Authorization", token))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+```
+In this test, we call our `getToken()` method with a username, and the user we need, and we set up our
+mocked `myConfig.getMessage()`, then we add `.header()` with our newly created token, and call the endpoint.
+
+## Getting user information from the SecurityContext
+With security setup this way, we can obtain our user's information from the Security context with the
+following code snipit.
+
+```java
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        Object o = authentication.getDetails();
+        System.out.println(o);
+        Object p = authentication.getPrincipal();
+```
+
+Note that this information codes from the Token only.  In order to get UserProfile data, you would
+have to make a request to your user profile api.  This is a fairly standard request, depending on
+what you need.
+
+### Getting user information from the token
+If you have access to the HttpRequest, you can get the "Authorization" header, and then parse that 
+for the user information stored in it, whatever that may be.  Here is a sample of what that would 
+look like...
+
+```java
+    public static Properties getTokenDetails(String token){
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET.getBytes())
+                .parseClaimsJws(token)
+                .getBody();
+        Properties userProps = new Properties();
+        userProps.put("username", claims.getSubject());
+        userProps.put("guid", claims.get("guid", String.class));
+        
+        return userProps;
+    }
+```

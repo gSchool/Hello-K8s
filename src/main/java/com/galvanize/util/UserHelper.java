@@ -15,7 +15,7 @@ public class UserHelper {
 
     JwtProperties jwtProperties;
 
-    public static void getTokenDetails(String token){
+    public static Properties getTokenDetails(String token){
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET.getBytes())
                 .parseClaimsJws(token)
@@ -23,5 +23,7 @@ public class UserHelper {
         Properties userProps = new Properties();
         userProps.put("username", claims.getSubject());
         userProps.put("guid", claims.get("guid", String.class));
+
+        return userProps;
     }
 }
