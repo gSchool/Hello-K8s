@@ -1,5 +1,6 @@
 package com.galvanize.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
 
+//    @Autowired
     private JwtProperties jwtProperties;
 
     public SecurityCredentialsConfig(JwtProperties jwtProperties) {
@@ -49,9 +51,9 @@ public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
     }
 
-    @Bean
-    public JwtProperties getJwtProperties(){
-        return new JwtProperties();
-    }
+//    @Bean
+//    public JwtProperties getJwtProperties(){
+//        return new JwtProperties();
+//    }
 
 }

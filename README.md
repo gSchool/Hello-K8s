@@ -26,3 +26,53 @@ Use `kubectl get service/hello-k8s-secure` to find the endpoint
 - `GET /secret` ROLE_ADMIN required
 - `GET /actuator/health` No privs required - Accessed by K8s to tell if the server is up.
 - `GET /actuator/**` ROLE_ADMIN - All actuator endpoints are exposed for this demo.
+
+
+## Unit Testing Concerns
+
+As things stand, there are some issues with Unit tests.  Because we are using JWT, we cannot rely on the standard @MockUser testing 
+protocols.  Also, we have a circular dependency bug in our SecurityCredentialsConfig class that needs to be addressed 
+before we can do anything. 
+
+### Fix our bug
+To fix the circular dependency bug, remove the bean declaration for JwtProperties in SecurityCredentialsConfig, and place it in another configuration 
+file, like your *Application I have done this in HelloK8sApplication.properties.  This will separate the bean from it's usage, thereby removing the 
+"circular" dependency.
+
+### Add a private method to create a dummy JWT token
+Since our application only uses tokens, we can just "dummy" up a token to test with on the fly.  I have implemented a method in my
+HelloControllerTest class, and it looks like this...
+
+```java 
+    private String getToken(String username, List<String> roles){
+        String token = Jwts.builder()
+                .setHeaderParam("typ","JWT")
+                .setSubject(username)
+                .claim("name", username)
+                .claim("guid", 99)
+                // Convert to list of strings.
+                // This is important because it affects the way we get them back in the Gateway.
+                .claim("authorities", roles)
+//                .setIssuedAt(new Date(now))
+//                .setExpiration(new Date(now + jwtProperties.getExpiration() * 1000L))  // in milliseconds
+                .signWith(SignatureAlgorithm.HS512, JWT_KEY.getBytes())
+                .compact();
+
+        return String.format("Bearer %s", token);
+    }
+```
+
+This method requires the same JWT_KEY that the token filter will use when validating the user.  I have
+accomplished this by creating an application-test.properties file with a value, and then grabbing this 
+value at the top of the test with the following code...
+```java
+    @Value("${security.jwt.secret}")
+    String JWT_KEY;
+```
+Note that I have commented out some of the un-necessary elements of the token.  Feel free to add them 
+back if you need them.  Don't forget the `@TestPropertySource(locations="classpath:application-test.properties")`
+annotation to read the test properties for the test.
+
+### Creating a test
+With these elements, you can now build a test with an Authorization header.  You would add this header
+as part of your get(), post(), etc argument to mockMvc.perform as I have done below...
