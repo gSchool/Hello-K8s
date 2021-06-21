@@ -107,20 +107,17 @@ have to make a request to your user profile api.  This is a fairly standard requ
 what you need.
 
 ### Getting user information from the token
-If you have access to the HttpRequest, you can get the "Authorization" header, and then parse that 
-for the user information stored in it, whatever that may be.  Here is a sample of what that would 
-look like...
+Spring Security can populate a UserPrincipal object that can be retrieved in the endpoint
+arguments like the following...
 
 ```java
-    public static Properties getTokenDetails(String token){
-        Claims claims = Jwts.parser()
-                .setSigningKey(JWT_SECRET.getBytes())
-                .parseClaimsJws(token)
-                .getBody();
-        Properties userProps = new Properties();
-        userProps.put("username", claims.getSubject());
-        userProps.put("guid", claims.get("guid", String.class));
-        
-        return userProps;
+@PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/user")
+    public JwtUser getUser(@AuthenticationPrincipal JwtUser principal){
+        return principal;
     }
 ```
+
+In order to make this happen, you need to populate a user object in your JwtTokenAuthenticationFilter after
+you confirm that the token is valid.  I have implemented this in this branch's filter, using a new class
+named JwtUser.  This implementation begins at line 60 of JwtTokenAuthenticationFilter.java
