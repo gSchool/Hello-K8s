@@ -24,3 +24,4 @@ spec:
                 secretKeyRef:
                   name: mysecret
                   key: secret-message
+                  optional: true
